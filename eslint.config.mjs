@@ -93,7 +93,7 @@ const eslintConfig = [
           extensions: [".js", ".jsx", ".ts", ".tsx"],
         },
         alias: {
-          map: [["@", "./src"]], // Fixed property name from 'alias' to 'map'
+          map: [["@", "./"]], // Fixed property name from 'alias' to 'map'
           extensions: [".ts", ".js", ".jsx", ".tsx", ".json"],
         },
       },
