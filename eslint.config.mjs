@@ -43,7 +43,7 @@ const eslintConfig = [
     "plugin:jsx-a11y/recommended",
     "plugin:import/recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
   ),
   eslintConfigPrettier,
   {
@@ -68,10 +68,7 @@ const eslintConfig = [
       ],
       "react-hooks/exhaustive-deps": "warn",
       "react-hooks/rules-of-hooks": "error",
-      "react/jsx-filename-extension": [
-        1,
-        { extensions: [".js", ".jsx","ts", ".tsx"] },
-      ],
+      "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx", "ts", ".tsx"] }],
       "react/jsx-indent-props": [1, 2],
       "react/jsx-indent": [1, 2],
       "react/prefer-stateless-function": [1],
