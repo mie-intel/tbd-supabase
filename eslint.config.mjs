@@ -79,7 +79,6 @@ const eslintConfig = [
       "import/no-duplicates": "error",
       "import/no-extraneous-dependencies": 0,
       "import/no-named-as-default": "off",
-      "react/forbid-prop-types": 0,
       "no-nested-ternary": "off",
       "jsx-a11y/click-events-have-key-events": "off",
     },
