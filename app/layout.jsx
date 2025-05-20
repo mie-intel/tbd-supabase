@@ -1,6 +1,13 @@
-import { Geist } from "next/font/google";
+import {
+  EudoxusBold,
+  EudoxusExtraBold,
+  EudoxusLight,
+  EudoxusMedium,
+  EudoxusRegular,
+} from "@/utils/font";
 import React from "react";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -8,19 +15,24 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Documents",
 };
-
-const geistSans = Geist({
-  display: "swap",
-  subsets: ["latin"],
-});
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning>
-      <body className="bg-background text-foreground p-4">{children}</body>
+    <html lang="id">
+      <body
+        className={cn(
+          EudoxusBold.variable,
+          EudoxusExtraBold.variable,
+          EudoxusLight.variable,
+          EudoxusMedium.variable,
+          EudoxusRegular.variable,
+          "min-h-screen w-full bg-[url('/bg-comp.webp')] bg-cover",
+        )}
+      >
+        {children}
+      </body>
     </html>
   );
 }
