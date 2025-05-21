@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
 
 export default function Container({ children, className }) {
-  return <div className={cn("relative h-full w-full backdrop-blur-lg", className)}>{children}</div>;
+  return <div className={cn("relative backdrop-blur-xl", className)}>{children}</div>;
 }
 
 Container.propTypes = {

@@ -8,6 +8,7 @@ import {
 import React from "react";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -28,10 +29,13 @@ export default function RootLayout({ children }) {
           EudoxusLight.variable,
           EudoxusMedium.variable,
           EudoxusRegular.variable,
-          "relative h-screen w-full bg-[url('/bg-comp.webp')] bg-cover",
         )}
       >
-        {children}
+        <AuthProvider>
+          <main className="relative h-screen w-full bg-[url('/bg-comp.webp')] bg-cover">
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
