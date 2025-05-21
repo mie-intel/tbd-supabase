@@ -17,6 +17,7 @@ export default function Page() {
 
   const { signUp, signIn, getCurrentUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -57,6 +58,42 @@ export default function Page() {
 
   // if (!data) return <></>;
 
+  const handleSubmit = async () => {
+    const email = emailRef?.current?.value;
+    const password = passwordRef?.current?.value;
+
+    if (!email || !password) {
+      setError("Email and Password are required");
+      return;
+    }
+
+    if (email.includes(" ")) {
+      setError("Email cannot contain spaces");
+      return;
+    }
+
+    if (email.includes("@") === false) {
+      setError("Invalid email format");
+      return;
+    }
+
+    if (password.length > 15) {
+      setError("Password cannot be more than 15 characters");
+      return;
+    }
+
+    if (email.length > 15) {
+      setError("Email cannot be more than 15 characters");
+      return;
+    }
+
+    const loginData = await signIn(email, password);
+    if (loginData.status === "error") {
+      setError(prettyJson(loginData.error));
+      return;
+    }
+  };
+
   return (
     <>
       <div className="relative flex h-full w-full items-center justify-center">
@@ -65,9 +102,14 @@ export default function Page() {
             Sign in
           </h2>
           <div className="mt-6 flex w-full flex-col gap-4">
-            <InputWrapper icon={User} placeholder="Email" />
-            <InputWrapper icon={Lock} placeholder="Password" />
-            <ButtonSubmit>Sign In</ButtonSubmit>
+            <InputWrapper ref={emailRef} icon={User} placeholder="Email" />
+            <InputWrapper ref={passwordRef} icon={Lock} placeholder="Password" />
+            {error && (
+              <p className="font-eudoxus-medium text-center text-sm text-[#FF0000] lg:text-xl">
+                {error}
+              </p>
+            )}
+            <ButtonSubmit onClick={handleSubmit}>Sign In</ButtonSubmit>
           </div>
           <p className="font-eudoxus-bold text-sm text-white lg:mt-3 lg:text-xl">
             New Here?{" "}

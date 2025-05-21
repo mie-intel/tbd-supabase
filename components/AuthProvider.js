@@ -18,19 +18,26 @@ const AuthProvider = ({ children }) => {
     });
 
     if (error) {
+      console.log("error", error);
       return error;
     }
 
+    console.log("data", data);
+    const userData = {
+      userid: data.user.id,
+      nama: name,
+      username: username,
+      password: password,
+    };
     // insert data to user table
     if (data.user) {
-      await supabase.from("users").insert([
-        {
-          userid: data.user.id,
-          name: name,
-          username: username,
-          password: password,
-        },
-      ]);
+      const { error } = await supabase.from("users").insert([userData]);
+      if (error) {
+        console.log("Insert error:", error.message);
+      }
+
+      const { data: usersData } = await supabase.from("users").select("*");
+      console.log("response", usersData);
     }
 
     return { status: "success", username: username };

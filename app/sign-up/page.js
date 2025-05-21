@@ -14,6 +14,8 @@ export default function Page() {
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
+  const [error, setError] = useState(null);
 
   const { signUp, signIn, getCurrentUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
@@ -56,6 +58,69 @@ export default function Page() {
 
   // if (!data) return <></>;
 
+  const handleSubmit = async () => {
+    const name = nameRef.current?.value?.trim();
+    const email = emailRef.current?.value?.trim();
+    const password = passwordRef.current?.value;
+    const confirmPassword = confirmPasswordRef.current?.value;
+
+    // Name validation
+    if (!name) {
+      setError("Name is required");
+      return;
+    }
+    if (name.length > 50) {
+      setError("Name cannot be more than 50 characters");
+      return;
+    }
+
+    // Email validation
+    if (!email) {
+      setError("Email is required");
+      return;
+    }
+    if (email.includes(" ")) {
+      setError("Email cannot contain spaces");
+      return;
+    }
+    if (!email.includes("@")) {
+      setError("Invalid email format");
+      return;
+    }
+    if (email.length > 50) {
+      setError("Email cannot be more than 50 characters");
+      return;
+    }
+
+    // Password validation
+    if (!password) {
+      setError("Password is required");
+      return;
+    }
+    if (password.length > 30) {
+      setError("Password cannot be more than 30 characters");
+      return;
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      setError("Confirm Password is required");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    // If all validations pass, call signUp
+    const signUpData = await signUp(name, email, password);
+    if (signUpData.status === "error") {
+      setError(prettyJson(signUpData.error));
+      return;
+    }
+    setError(null);
+  };
+
   return (
     <>
       <div className="relative flex h-full w-full items-center justify-center">
@@ -64,11 +129,20 @@ export default function Page() {
             Register
           </h2>
           <div className="mt-6 flex w-full flex-col gap-4">
-            <InputWrapper icon={UserRoundPen} placeholder="Name" />
-            <InputWrapper icon={User} placeholder="Email" />
-            <InputWrapper icon={Lock} placeholder="Password" />
-            <InputWrapper icon={BadgeCheck} placeholder="Confirm Password" />
-            <ButtonSubmit>Create Account</ButtonSubmit>
+            <InputWrapper ref={nameRef} icon={UserRoundPen} placeholder="Name" />
+            <InputWrapper ref={emailRef} icon={User} placeholder="Email" />
+            <InputWrapper ref={passwordRef} icon={Lock} placeholder="Password" />
+            <InputWrapper
+              ref={confirmPasswordRef}
+              icon={BadgeCheck}
+              placeholder="Confirm Password"
+            />
+            {error && (
+              <p className="font-eudoxus-medium text-center text-sm text-[#FF0000] lg:text-xl">
+                {error}
+              </p>
+            )}
+            <ButtonSubmit onClick={handleSubmit}>Create Account</ButtonSubmit>
           </div>
           <p className="font-eudoxus-bold text-sm text-white lg:mt-3 lg:text-xl">
             Already have an account?{" "}
