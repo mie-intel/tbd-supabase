@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
           EudoxusLight.variable,
           EudoxusMedium.variable,
           EudoxusRegular.variable,
-          "min-h-screen w-full bg-[url('/bg-comp.webp')] bg-cover",
+          "relative h-screen w-full bg-[url('/bg-comp.webp')] bg-cover",
         )}
       >
         {children}
