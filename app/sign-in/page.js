@@ -9,6 +9,7 @@ import InputWrapper from "@/components/InputWrapper";
 import ButtonSubmit from "@/components/ButtonSubmit";
 import Link from "next/link";
 import Loading from "@/components/Loading";
+import { get } from "http";
 
 export default function Page() {
   const nameRef = useRef(null);
@@ -82,6 +83,15 @@ export default function Page() {
       setError(prettyJson(loginData.error));
       return;
     }
+    const data = await getCurrentUser();
+    if (data.status === "error") {
+      setError(prettyJson(data.error));
+      return;
+    }
+    if (data.status === "success") {
+      setData(data);
+      setError(null);
+    }
   };
 
   return (
@@ -107,6 +117,7 @@ export default function Page() {
               <Link href="/sign-up">Create Account</Link>
             </span>
           </p>
+          {prettyJson(data)}
         </Container>
       </div>
     </>
