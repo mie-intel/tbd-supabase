@@ -49,6 +49,9 @@ const AuthProvider = ({ children }) => {
       password: password,
     });
 
+    console.log("data", data);
+    console.log("error", error);
+
     if (error) return { status: "error", error: error.message };
     return {
       status: "success",

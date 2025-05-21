@@ -77,16 +77,6 @@ export default function Page() {
       return;
     }
 
-    if (password.length > 15) {
-      setError("Password cannot be more than 15 characters");
-      return;
-    }
-
-    if (email.length > 15) {
-      setError("Email cannot be more than 15 characters");
-      return;
-    }
-
     const loginData = await signIn(email, password);
     if (loginData.status === "error") {
       setError(prettyJson(loginData.error));
