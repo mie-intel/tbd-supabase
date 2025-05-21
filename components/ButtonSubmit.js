@@ -6,7 +6,7 @@ export default function ButtonSubmit({ children, className, ...props }) {
     <button
       type="button"
       className={cn(
-        "rounded-[50px] bg-[#213356] text-center text-xl text-[#EFF4FE] duration-500 hover:bg-[#466EB8] max-sm:p-3 sm:p-4 sm:text-2xl lg:text-3xl",
+        "font-eudoxus-medium rounded-[50px] bg-[#213356] text-center text-xl text-[#EFF4FE] duration-500 hover:bg-[#466EB8] max-sm:p-3 sm:p-4 sm:text-2xl lg:text-3xl",
         className,
       )}
       {...props}
