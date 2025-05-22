@@ -99,7 +99,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="reltify-ceative jusnter flex h-full w-full items-center">
+      <div className="reltify-ceative flex h-full w-full items-center justify-center">
         <Container className="relative flex w-[90%] flex-col items-center justify-center gap-3 rounded-xl border-2 border-[#EFF4FE] bg-white/30 px-[3%] py-20 text-[#213356] md:w-md lg:w-xl xl:w-2xl">
           <h2 className="font-eudoxus-bold text-4xl text-[#213356] sm:text-5xl lg:text-6xl">
             Sign in

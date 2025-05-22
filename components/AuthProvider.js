@@ -84,12 +84,18 @@ const AuthProvider = ({ children }) => {
       return { status: "error", error: "User not found" };
     }
     const { data, error } = await supabase.auth.getUser();
+    const { data: dataUser, error: errorUser } = await supabase
+      .from("users")
+      .select("*")
+      .eq("userid", data.user.id)
+      .single();
     if (error) return { status: "error", error: error.message };
     if (!data.user) return { status: "error", error: "User not found" };
     return {
       status: "success",
       userid: data.user.id,
       username: data.user.email,
+      name: dataUser.nama,
     };
   };
   return (

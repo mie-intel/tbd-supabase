@@ -20,11 +20,19 @@ const days = {
 export default function Layout({ children }) {
   const [loading, setLoading] = useState(true);
   const [currDate, setCurrDate] = useState(new Date());
-  const { signOut } = useContext(AuthContext);
+  const { signOut, getCurrentUser } = useContext(AuthContext);
+  const [user, setUser] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     setLoading(false);
+    const init = async () => {
+      const userData = await getCurrentUser();
+      if (userData) {
+        setUser(userData.name);
+      }
+    };
+    init();
   }, []);
 
   useEffect(() => {
@@ -48,9 +56,10 @@ export default function Layout({ children }) {
   if (loading) return <Loading />;
 
   //   Compute Date
-  const now = new Date();
   const utc7Offset = 7 * 60; // 7 hours in minutes
-  const utc7Time = new Date(now.getTime() + (utc7Offset - now.getTimezoneOffset()) * 60000);
+  const utc7Time = new Date(
+    currDate.getTime() + (utc7Offset - currDate.getTimezoneOffset()) * 60000,
+  );
   const day = utc7Time.getDay();
 
   return (
@@ -58,7 +67,7 @@ export default function Layout({ children }) {
       <div className="font-eudoxus-medium fixed top-0 z-[88] flex w-full justify-between bg-[#213356] p-3 text-sm text-white md:p-4 md:text-lg">
         <div className="flex items-center">
           <User className="mr-2 h-9 w-7" />
-          <span>Polikarpus</span>
+          <span>{user}</span>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           <div className="rounded-[7px] bg-[#5D93F5] px-2 py-1">
