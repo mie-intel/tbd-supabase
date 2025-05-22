@@ -31,15 +31,17 @@ export default async function Home() {
         <div className="flex w-[90%] items-start justify-between">
           <ButtonAdd className="">Tambahkan</ButtonAdd>
         </div>
-        <div className="relative flex flex-col gap-4 w-[90%] bg-white/20 backdrop-blur-lg rounded-[5px] border-[1.5px] px-3 py-3 border-[#16223B]">
+        <div className="relative flex flex-col gap-[12px] w-[90%] bg-white/20 backdrop-blur-lg rounded-[15px] border-[1.5px] px-3 py-3 border-[#16223B]">
+          {/* Search Box */}
           <div className="flex w-full justify-between items-center">
             <span className="font-eudoxus-medium text-xl text-[#16223B]">
-              Dafter Dokumen
+              Daftar Dokumen
             </span>
             <SearchBox></SearchBox>
           </div>
+          {/* Dasboard Item */}
           <div>
-            <DashboardItem></DashboardItem>
+            <DashboardItem title="Judul 1" viewDoc="25/05/2025" createdAt="Ibarat kata ye lu orang ni apa ya su..."></DashboardItem>
           </div>
         </div>
       </div>  

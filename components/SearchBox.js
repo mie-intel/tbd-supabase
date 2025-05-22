@@ -9,7 +9,7 @@ export default function SearchBox({ className, ...props }) {
       <input
         type="text"
         placeholder="Search..."
-        className="font-eudoxus-medium rounded-[5px] text-[#16223B] placeholder-[#16223B]/50 focus:outline-none"
+        className="font-eudoxus-medium w-full rounded-[5px] text-[#16223B] placeholder-[#16223B]/50 focus:outline-none"
       />
     </div>
   );
