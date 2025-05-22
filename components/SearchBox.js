@@ -4,12 +4,12 @@ import { Search } from "lucide-react";
 
 export default function SearchBox({ className, ...props }) {
   return (
-    <div className="flex w-[20%] items-center gap-[6px] rounded-[8px] border-[1.5px] border-[#16223B]/20 bg-[#505050]/20 px-3 py-2 backdrop-blur-xl">
-      <Search className="mr-1 h-4.5 w-4.5 text-[#16223B]/50" />
+    <div className="flex w-[35%] items-center gap-[4px] rounded-[8px] border-[1.5px] border-[#16223B]/20 bg-[#505050]/20 px-1.5 py-1 backdrop-blur-xl duration-300 ease-in-out hover:shadow-lg md:w-[40%] md:px-3 md:py-2 xl:w-[30%] 2xl:w-[20%]">
+      <Search className="mr-1 h-3 w-3 text-[#16223B]/50 duration-300 ease-in-out md:h-4.5 md:w-4.5" />
       <input
         type="text"
         placeholder="Search..."
-        className="font-eudoxus-medium w-full rounded-[5px] text-[#16223B] placeholder-[#16223B]/50 focus:outline-none"
+        className="font-eudoxus-medium md:text-md w-full rounded-[5px] text-[12px] text-[#16223B] placeholder-[#16223B]/50 duration-300 ease-in-out focus:outline-none lg:text-lg xl:text-xl"
       />
     </div>
   );
