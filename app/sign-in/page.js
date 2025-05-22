@@ -9,12 +9,13 @@ import InputWrapper from "@/components/InputWrapper";
 import ButtonSubmit from "@/components/ButtonSubmit";
 import Link from "next/link";
 import Loading from "@/components/Loading";
-import { get } from "http";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const router = useRouter();
 
   const { signUp, signIn, getCurrentUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
@@ -92,6 +93,8 @@ export default function Page() {
       setData(data);
       setError(null);
     }
+    router.refresh();
+    router.push("/dashboard");
   };
 
   return (

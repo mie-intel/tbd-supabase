@@ -9,6 +9,7 @@ import InputWrapper from "@/components/InputWrapper";
 import ButtonSubmit from "@/components/ButtonSubmit";
 import Link from "next/link";
 import Loading from "@/components/Loading";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const nameRef = useRef(null);
@@ -19,6 +20,7 @@ export default function Page() {
 
   const { signUp, signIn, getCurrentUser } = useContext(AuthContext);
   const [data, setData] = useState(null);
+  const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -119,6 +121,8 @@ export default function Page() {
       return;
     }
     setError(null);
+    router.refresh();
+    router.push("/sign-in");
   };
 
   return (

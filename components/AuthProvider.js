@@ -1,15 +1,14 @@
 "use client";
 
 import PropTypes from "prop-types";
-import { createContext } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { createContext } from "react";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const supabase = createClient();
-  const error = null;
-
   // create a new user
   const signUp = async (name, username, password) => {
     const { data, error } = await supabase.auth.signUp({
@@ -53,6 +52,19 @@ const AuthProvider = ({ children }) => {
     console.log("error", error);
 
     if (error) return { status: "error", error: error.message };
+    const dataUser = {
+      status: "success",
+      userid: data.user.id,
+      username: username,
+    };
+
+    Cookies.set("access_token", JSON.stringify(dataUser), {
+      expires: 1,
+      path: "/",
+      secure: true,
+      sameSite: "Strict",
+    });
+
     return {
       status: "success",
       userid: data.user.id,
@@ -60,7 +72,17 @@ const AuthProvider = ({ children }) => {
     };
   };
 
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) return { status: "error", error: error.message };
+    Cookies.remove("access_token");
+    return { status: "success" };
+  };
+
   const getCurrentUser = async () => {
+    if (!Cookies.get("access_token")) {
+      return { status: "error", error: "User not found" };
+    }
     const { data, error } = await supabase.auth.getUser();
     if (error) return { status: "error", error: error.message };
     if (!data.user) return { status: "error", error: "User not found" };
@@ -70,16 +92,14 @@ const AuthProvider = ({ children }) => {
       username: data.user.email,
     };
   };
-
   return (
-    <AuthContext.Provider value={{ signUp, signIn, getCurrentUser }}>
+    <AuthContext.Provider value={{ signUp, signIn, signOut, getCurrentUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 AuthProvider.propTypes = {
-  className: PropTypes.string,
   children: PropTypes.node.isRequired,
 };
 
