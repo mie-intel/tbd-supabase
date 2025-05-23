@@ -76,7 +76,7 @@ export default function Home() {
               />
             </div>
             {/* Isi */}
-            <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex h-[82%] w-full flex-col items-center justify-center gap-6 overflow-y-auto pr-3 px-6 py-4 text-[black]">
+            <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex h-[82%] w-full flex-col items-center gap-6 overflow-y-auto pr-3 px-6 py-4 text-[black]">
               {exampleTexts.map((text, idx) => (
                 <p key={idx}>{text}</p>
               ))}
