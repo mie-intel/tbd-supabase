@@ -19,7 +19,7 @@ export default async function Home() {
   const supabase = createClient();
   // const { data } = await supabase.from("notes").select("id");
   // const data = await ambilNotes("isi");
-  const { data, error } = await supabase.from("notes").select("*").gt("isi", 5000);
+  const { data, error } = await supabase.from("notes").select("*");
   console.log("data", data);
-  return <DefaultLayout className={"text-[#000000]"}>ADkasdasdas</DefaultLayout>;
+  return <DefaultLayout className={"text-[#000000]"}>ADkasdaadj</DefaultLayout>;
 }
