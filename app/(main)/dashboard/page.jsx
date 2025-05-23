@@ -1,21 +1,15 @@
+"use client";
 import { createClient } from "@/utils/supabase/client";
 import { ambilDataIjalBerau } from "@/lib/query/ijalberau";
 import { ambilNotes } from "@/lib/query/notes";
 import DefaultLayout from "@/components/DefaultLayout";
 import Image from "next/image";
+import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
 import ButtonAdd from "@/components/ButtonAddDoc";
 import { Span } from "next/dist/trace";
+import Loading from "@/components/Loading";
 import SearchBox from "@/components/SearchBox";
 import DashboardItem from "@/components/DashboardItem";
-
-const Notes = ({ id, isi }) => {
-  return (
-    <div className="flex w-full flex-col bg-[red] text-[white]">
-      <div className="flex w-[50%] bg-[green] text-[white]">{id}</div>
-      <div className="flex w-[50%] bg-[blue] text-[white]">{isi}</div>
-    </div>
-  );
-};
 
 const test = [
   {
@@ -60,32 +54,37 @@ const test = [
     createdAt: "2023-10-01",
     viewDoc: "25/05/2025",
   },
-]
+];
 
 export default async function Home() {
   // let { data, error } = await supabase.from("notes").select("*");
   // const data = await ambilNotes("*");
   const supabase = createClient();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+  if (loading) return <Loading />;
   // const { data } = await supabase.from("notes").select("id");
   // const data = await ambilNotes("isi");
   const { data, error } = await supabase.from("notes").select("*").gt("isi", 5000);
   console.log("data", data);
-  return ( 
+  return (
     <>
-      <div className="relatify-ceactive justify-center w-full h-full flex flex-col items-center gap-4 pt-14">
+      <div className="relatify-ceactive flex h-full w-full flex-col items-center justify-center gap-4 pt-14">
         <div className="flex w-[90%] items-start justify-between">
           <ButtonAdd className="">Tambahkan</ButtonAdd>
         </div>
-        <div className="relative flex flex-col gap-[12px] w-[90%] h-[75%] bg-white/20 backdrop-blur-lg rounded-[15px] border-[1.5px] px-3 py-3 border-[#16223B]">
+        <div className="relative flex h-[75%] w-[90%] flex-col gap-[12px] rounded-[15px] border-[1.5px] border-[#16223B] bg-white/20 px-3 py-3 backdrop-blur-lg">
           {/* Search Box */}
-          <div className="flex w-full justify-between items-center">
-            <span className="font-eudoxus-medium text-md md:text-xl text-[#16223B]">
+          <div className="flex w-full items-center justify-between">
+            <span className="font-eudoxus-medium text-md text-[#16223B] md:text-xl">
               Daftar Dokumen
             </span>
             <SearchBox></SearchBox>
           </div>
           {/* Dasboard Item */}
-          <div className="flex flex-col gap-4 overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+          <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex flex-col gap-4 overflow-y-auto pr-3">
             {test.map((item) => (
               <DashboardItem
                 key={item.id}
@@ -96,7 +95,7 @@ export default async function Home() {
             ))}
           </div>
         </div>
-      </div>  
+      </div>
     </>
   );
 }
