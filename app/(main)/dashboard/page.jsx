@@ -6,7 +6,6 @@ import DefaultLayout from "@/components/DefaultLayout";
 import Image from "next/image";
 import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
 import ButtonAdd from "@/components/ButtonAddDoc";
-import { Span } from "next/dist/trace";
 import Loading from "@/components/Loading";
 import SearchBox from "@/components/SearchBox";
 import DashboardItem from "@/components/DashboardItem";
@@ -81,7 +80,7 @@ export default async function Home() {
             <span className="font-eudoxus-medium text-md text-[#16223B] md:text-xl">
               Daftar Dokumen
             </span>
-            <SearchBox></SearchBox>
+            <SearchBox />
           </div>
           {/* Dasboard Item */}
           <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex flex-col gap-4 overflow-y-auto pr-3">
@@ -91,7 +90,7 @@ export default async function Home() {
                 title={item.title}
                 createdAt={item.createdAt}
                 viewDoc={item.isi}
-              ></DashboardItem>
+              />
             ))}
           </div>
         </div>
