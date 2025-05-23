@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 
-export default function ButtonContributtor({ children, className, ...props }) {
+export default function ButtonContributor({ children, className, ...props }) {
   return (
     <button
       type="button"
@@ -18,7 +18,7 @@ export default function ButtonContributtor({ children, className, ...props }) {
   );
 }
 
-ButtonContributtor.propTypes = {
+ButtonContributor.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };

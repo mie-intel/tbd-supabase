@@ -21,17 +21,17 @@ export default function AccessDropdown() {
   }, []);
 
   return (
-    <div className="relative inline-block" ref={dropdownRef}>
+    <div className="relative inline-block w-36" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-xl border border-black bg-blue-500 px-4 py-2 text-lg font-semibold text-white shadow"
+        className="font-eudoxus flex w-full items-center gap-2 rounded-xl border border-black bg-blue-500 px-4 py-2 text-lg text-white shadow"
       >
         <ChevronDown className="h-5 w-5" />
         {selected}
       </button>
 
       {open && (
-        <div className="absolute right-0 z-10 mt-2 w-36 rounded-md border bg-white shadow-lg">
+        <div className="absolute z-10 mt-2 w-full rounded-md border bg-white shadow-lg">
           {modes.map((mode) => (
             <button
               key={mode.label}
@@ -39,7 +39,7 @@ export default function AccessDropdown() {
                 setSelected(mode.label);
                 setOpen(false);
               }}
-              className="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-100"
+              className="font-eudoxus flex w-full items-center justify-between px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
             >
               {mode.label}
               {selected === mode.label && <Check className="h-4 w-4 text-green-500" />}

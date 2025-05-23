@@ -7,9 +7,8 @@ import Image from "next/image";
 import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
 import Loading from "@/components/Loading";
 import ButtonHome from "@/components/ButtonHome";
-import ButtonContributtor from "@/components/ButtonContributtor";
-import { Accordion } from "../../../../components/Dropdown";
-import AccessDropdown from "@/components/AcessDropdown";
+import ButtonContributor from "@/components/ButtonContributor";
+import AccessDropdown from "@/components/AccessDropdown";
 
 export default function Home() {
   // let { data, error } = await supabase.from("notes").select("*");
@@ -27,28 +26,21 @@ export default function Home() {
   // console.log("data", data);
   return (
     <>
-      <div className="flex h-full w-full flex-col items-center justify-center pt-10 text-black">
-        <div className="flex h-[85%] w-[90%] flex-col text-[white]">
+      <div className="relative flex h-full w-full flex-col items-center justify-center pt-10 text-black">
+        <div className="relative flex h-[85%] w-[90%] flex-col text-[white]">
           {/* atas */}
-          <div className="flex h-[8%] w-full items-center text-[white]">
+          <div className="relative flex h-[8%] w-full items-center bg-[blue] text-[white]">
             {/* home */}
             <div className="w-[75%]">
               <ButtonHome></ButtonHome>
             </div>
             {/* access */}
-            <div className="flex h-full w-[25%] flex-row items-end text-[white]">
-              <div>
+            <div className="relative flex h-full w-[25%] flex-row items-end text-[white]">
+              <div className="relative flex h-full w-[25%] items-center justify-center">
                 <AccessDropdown />
-                {/* <button onClick={() => setOpen(!open)} className="h-full w-full">
-                  Click
-                </button>
-                <Accordion isOpen={open} className="relative top-0">
-                  Aahrkjsdheajksrh <br />
-                  asdkasdjlaskd
-                </Accordion> */}
               </div>
-              <div className="flex h-full items-center justify-center">
-                <ButtonContributtor>Contributtor</ButtonContributtor>
+              <div className="flex h-full w-[75%] items-center justify-center">
+                <ButtonContributor>Contributor</ButtonContributor>
               </div>
             </div>
           </div>
