@@ -21,10 +21,10 @@ export default function AccessDropdown() {
   }, []);
 
   return (
-    <div className="relative inline-block w-36" ref={dropdownRef}>
+    <div className="relative inline-block w-30" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="font-eudoxus flex w-full items-center gap-2 rounded-xl border border-black bg-blue-500 px-4 py-2 text-lg text-white shadow"
+        className="font-eudoxus flex w-full items-center gap-2 rounded-[10px] border border-black bg-blue-500 px-4 py-2 text-lg text-white shadow"
       >
         <ChevronDown className="h-5 w-5" />
         {selected}

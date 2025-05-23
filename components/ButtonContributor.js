@@ -7,7 +7,7 @@ export default function ButtonContributor({ children, className, ...props }) {
     <button
       type="button"
       className={cn(
-        "font-eudoxus-medium text-md flex cursor-pointer items-center gap-[8px] rounded-[5px] border-1 border-[#16223B] bg-[#F5C45E] px-3 py-1.5 text-white duration-300 ease-in-out hover:bg-[#DDB155] sm:px-4 sm:py-2.5 sm:text-xl",
+        "font-eudoxus-medium text-md flex cursor-pointer items-center gap-[8px] rounded-[10px] border-1 border-[#16223B] bg-[#F5C45E] px-3 py-1.5 text-white duration-300 ease-in-out hover:bg-[#DDB155] sm:px-4 sm:py-2.5 sm:text-xl",
         className,
       )}
       {...props}
