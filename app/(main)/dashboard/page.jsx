@@ -1,10 +1,11 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
-import { ambilDataIjalBerau } from "@/lib/query/ijalberau";
+import { fetchDoc } from "@/lib/query/documents";
 import { ambilNotes } from "@/lib/query/notes";
 import DefaultLayout from "@/components/DefaultLayout";
 import Image from "next/image";
 import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import ButtonAdd from "@/components/ButtonAddDoc";
 import Loading from "@/components/Loading";
 import SearchBox from "@/components/SearchBox";
@@ -55,19 +56,45 @@ const test = [
   },
 ];
 
-export default async function Home() {
-  // let { data, error } = await supabase.from("notes").select("*");
-  // const data = await ambilNotes("*");
+export default function Home() {
+
   const supabase = createClient();
+  const router = useRouter();
+
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    setLoading(false);
+    (async () => {
+      const {
+        data: { session },
+      } =  await supabase.auth.getSession();
+      if (!session) {
+        router.push("/auth/login");
+        return;
+      }
+      await fetchDoc(session.user.id);
+      setLoading(false);
+    })
   }, []);
   if (loading) return <Loading />;
+
+  // Ambil Dokumen punya user
+  async function fetchDoc(userId) {
+    const { data, error } = await supabase
+      .from("documents")
+      .select("*")
+      .eq("ownerid", userId);
+    if (error) {
+      console.error("Error fetching documents:", error);
+      return null;
+    }
+    console.log("Documents:", data);
+  }
+
+
   // const { data } = await supabase.from("notes").select("id");
   // const data = await ambilNotes("isi");
-  const { data, error } = await supabase.from("notes").select("*").gt("isi", 5000);
-  console.log("data", data);
+  // const { data, error } = await supabase.from("notes").select("*").gt("isi", 5000);
+  // console.log("data", data);
   return (
     <>
       <div className="relatify-ceactive flex h-full w-full flex-col items-center justify-center gap-4 pt-14">

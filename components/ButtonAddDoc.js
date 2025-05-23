@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/router";
 
 export default function ButtonAddDoc({ children, className, ...props }) {
   return (
