@@ -63,23 +63,19 @@ export default function Home() {
       <div className="relative flex h-full w-full flex-col items-center justify-center pt-10 text-black">
         <div className="relative flex h-[85%] w-[90%] flex-col text-[white]">
           {/* atas */}
-          <div className="relative flex h-[8%] w-full items-center justify-between px-4 text-[white]">
+          <div className="relative flex h-[8%] w-full items-center justify-between text-[white]">
             {/* home */}
-            <div className="w-[75%]">
+            <div className="w-[50%]">
               <ButtonHome></ButtonHome>
             </div>
             {/* access */}
-            <div className="relative flex h-full w-[25%] flex-row items-center space-x-4 text-[white]">
-              <div className="relative flex h-full items-center justify-center">
-                <AccessDropdown />
-              </div>
-              <div className="relative flex h-full items-center justify-center">
-                <ButtonContributor>Contributor</ButtonContributor>
-              </div>
+            <div className="flex h-full w-[50%] flex-row items-center justify-end gap-4 text-[white]">
+              <AccessDropdown />
+              <ButtonContributor>Contributor</ButtonContributor>
             </div>
           </div>
           {/* bawah */}
-          <div className="relative flex h-[92%] w-full flex-col gap-[12px] rounded-[10px] border-[1.5px] border-[#16223B] bg-white/20 px-3 py-3 text-[white] backdrop-blur-lg">
+          <div className="relative flex h-[92%] w-full flex-col gap-[12px] rounded-[10px] border-[1.5px] border-[#16223B] bg-white/40 px-3 py-3 text-[white] backdrop-blur-lg">
             {/* Judul dkk */}
             <div className="flex h-[18%] w-full">
               <HeaderDocuments
