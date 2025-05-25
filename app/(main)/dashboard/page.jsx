@@ -55,7 +55,7 @@ export default function Home() {
           id: data[0].id,
           title: data[0].title,
           isi: data[0].isi || "",
-          createdAt: new Date(data[0].created_at).toISOString().split('T')[0],
+          createdAt: new Date(data[0].createtime).toISOString().split('T')[0],
           viewDoc: data[0].isi || "",
         };
         setDocuments(prev => [newDoc, ...prev]);
@@ -89,7 +89,7 @@ export default function Home() {
           id: doc.id,
           title: doc.title,
           isi: doc.isi || "",
-          createdAt: new Date(doc.created_at).toISOString().split('T')[0],
+          createdAt: new Date(doc.createtime).toISOString().split('T')[0],
           viewDoc: doc.isi || "",
         }));
         setDocuments(formattedDocs);
