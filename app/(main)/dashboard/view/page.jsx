@@ -10,6 +10,7 @@ import ButtonHome from "@/components/ButtonHome";
 import ButtonContributor from "@/components/ButtonContributor";
 import AccessDropdown from "@/components/AccessDropdown";
 import HeaderDocuments from "@/components/HeaderDocuments";
+import ButtonSave from "@/components/ButtonSave";
 
 export default function Home() {
   // let { data, error } = await supabase.from("notes").select("*");
@@ -63,7 +64,7 @@ export default function Home() {
       <div className="relative flex h-full w-full flex-col items-center justify-center pt-10 text-black">
         <div className="relative flex h-[85%] w-[90%] flex-col text-[white]">
           {/* atas */}
-          <div className="relative flex h-[8%] w-full items-center justify-between text-[white]">
+          <div className="relative flex h-[7%] w-full items-center justify-between text-[white]">
             {/* home */}
             <div className="w-[50%]">
               <ButtonHome></ButtonHome>
@@ -75,7 +76,7 @@ export default function Home() {
             </div>
           </div>
           {/* bawah */}
-          <div className="relative flex h-[92%] w-full flex-col gap-[12px] rounded-[10px] border-[1.5px] border-[#16223B] bg-white/40 px-3 py-3 text-[white] backdrop-blur-lg">
+          <div className="relative flex h-[88%] w-full flex-col gap-[12px] rounded-[10px] border-[1.5px] border-[#16223B] bg-white/40 px-3 py-3 text-[white] backdrop-blur-lg">
             {/* Judul dkk */}
             <div className="flex h-[18%] w-full">
               <HeaderDocuments
@@ -92,6 +93,10 @@ export default function Home() {
                 <p key={idx}>{text}</p>
               ))}
             </div>
+          </div>
+          {/* save */}
+          <div className="flex h-[5%] w-full flex-row justify-end pt-1">
+            <ButtonSave>Save</ButtonSave>
           </div>
         </div>
       </div>

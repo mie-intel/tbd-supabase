@@ -38,7 +38,11 @@ export default function ContributorPopup({ onClose }) {
                 className="h-5 w-5 cursor-pointer rounded-sm border border-black"
                 onClick={() => toggleSelect(index)}
               >
-                {selected.includes(index) && <div className="h-full w-full bg-blue-500" />}
+                {selected.includes(index) && (
+                  <div className="flex h-full w-full items-center justify-center bg-blue-500">
+                    <span className="text-white">✓</span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
