@@ -10,12 +10,9 @@ export default function HeaderDocuments({
   ...props
 }) {
   return (
-    <div
-      className={cn("flex h-full w-full flex-row  px-6 py-4", className)}
-      {...props}
-    >
+    <div className={cn("flex h-full w-full flex-row px-6 py-4", className)} {...props}>
       {/* Kiri: Judul dan info */}
-      <div className="font-eudoxus-sans flex w-[80%] flex-col items-start justify-center">
+      <div className="font-eudoxus-sans flex w-[75%] flex-col items-start justify-center">
         <h1 className="mb-1 text-3xl font-extrabold text-slate-900">{title}</h1>
         <div className="mb-1 text-slate-800">
           <span className="font-semibold">Create at:</span>{" "}
@@ -30,7 +27,7 @@ export default function HeaderDocuments({
       </div>
 
       {/* Kanan:*/}
-      <div className="font-eudoxus-sans ml-auto flex w-[20%] items-center space-x-3 text-sm font-semibold text-blue-600">
+      <div className="font-eudoxus-sans ml-auto flex w-[25%] items-center space-x-3 text-sm font-semibold text-blue-600">
         <span>Contributors:</span>
         <div className="flex max-w-xs space-x-2 overflow-hidden text-ellipsis whitespace-nowrap">
           {contributors.map((contributor, idx) => (
