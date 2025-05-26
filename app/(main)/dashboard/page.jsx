@@ -20,39 +20,100 @@ const test = [
 
 export default function Home() {
   // TESTTT munculin data
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await testFetch();
-      if (error) {
-        console.error("Error fetching data:", error);
-      }
-      setData(data);
-    };
-    fetchData();
-  }, []);
-
-  //BUTTON ADD
   const [openModal, setOpenModal] = useState(false);
-  const [judul, setJudul] = useState("");
+  const [documents, setDocuments] = useState(test);
   const [loading, setLoading] = useState(false);
+  const [judul, setJudul] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
 
+  // Fungsi untuk get current user (contoh, sesuaikan dengan auth system Anda)
+  const getCurrentUser = async () => {
+    // Implementasi sesuai sistem auth Anda
+    // Contoh sederhana:
+    return { userid: 1 }; // atau ambil dari session/context
+  };
+
+  // Fungsi untuk menambah dokumen
   const handleAddDocument = async () => {
-    if (!judul.trim()) return;
-    setLoading(true);
-
-    const { data: newDoc, error } = await addDocument(judul); // Pastikan `addDocument` menerima judul
-
-    if (error) {
-      console.error("Gagal menambahkan dokumen:", error);
-    } else {
-      setData((prev) => [newDoc, ...prev]); // Tambahkan dokumen baru ke list
-      setJudul("");
-      setOpenModal(false);
+    if (!judul.trim()) {
+      alert("Judul tidak boleh kosong!");
+      return;
     }
 
-    setLoading(false);
+    setLoading(true);
+    try {
+      const user = await getCurrentUser();
+      if (!user) {
+        alert("User tidak ditemukan!");
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await addDocument(judul, user.userid);
+
+      if (error) {
+        console.error("Error adding document:", error);
+        alert("Gagal menambahkan dokumen!");
+        return;
+      }
+
+      // Update state documents dengan data baru
+      if (data && data[0]) {
+        const newDoc = {
+          id: data[0].docid,
+          title: data[0].judul,
+          isi: data[0].isi || "",
+          createdAt: new Date(data[0].createtime).toISOString().split('T')[0],
+          viewDoc: data[0].isi || "",
+        };
+        setDocuments(prev => [newDoc, ...prev]);
+      }
+
+      // Reset form dan tutup modal
+      setJudul("");
+      setOpenModal(false);
+      alert("Dokumen berhasil ditambahkan!");
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan!");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Fungsi untuk load documents dari database
+  const loadDocuments = async () => {
+    try {
+      const user = await getCurrentUser();
+      if (!user) return;
+
+      const { data, error } = await fetchAllDocuments(user.userid);
+
+      if (error) {
+        console.error("Error fetching documents:", error);
+        return;
+      }
+
+      if (data) {
+        const formattedDocs = data.map(doc => ({
+          id: doc.docid,
+          title: doc.judul,
+          isi: doc.isi || "",
+          createdAt: new Date(doc.createtime).toISOString().split('T')[0],
+          viewDoc: doc.isi || "",
+        }));
+        setDocuments(formattedDocs);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  // Load documents saat component mount
+  useEffect(() => {
+    // loadDocuments(); // uncomment jika ingin load dari database
+  }, []);
 
   // const { data } = await supabase.from("notes").select("id");
   // const data = await ambilNotes("isi");
@@ -74,11 +135,11 @@ export default function Home() {
           </div>
           {/* Dasboard Item */}
           <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex flex-col gap-4 overflow-y-auto pr-3">
-            {data.map((item) => (
+            {test.map((item) => (
               <DashboardItem
-                key={item.docid}
-                title={item.judul}
-                createdAt={item.createtime}
+                key={item.id}
+                title={item.title}
+                createdAt={item.createdAt}
                 viewDoc={item.isi}
               />
             ))}
