@@ -1,9 +1,5 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
-import { ambilDataIjalBerau } from "@/lib/query/ijalberau";
-import { ambilNotes } from "@/lib/query/notes";
-import DefaultLayout from "@/components/DefaultLayout";
-import Image from "next/image";
 import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
 import Loading from "@/components/Loading";
 import ButtonHome from "@/components/ButtonHome";
