@@ -11,6 +11,8 @@ import ButtonSave from "@/components/ButtonSave";
 import { fetchDocumentById } from "@/lib/query/documents";
 import { fetchUserById } from "@/lib/query/users";
 import ContributorPopup from "@/components/ContributorPopup";
+import { AuthContext } from "@/components/AuthProvider";
+import { fetchDocumentContributors } from "@/lib/query/access";
 
 export default function Home() {
   const supabase = createClient();
@@ -20,15 +22,46 @@ export default function Home() {
   const [documentContent, setDocumentContent] = useState("");
   const [documentTitle, setDocumentTitle] = useState("");
   const [documentDate, setDocumentDate] = useState("");
+  const [documentEditDate, setDocumentEditDate] = useState("");
   const [editMode, setEditMode] = useState("Edit");
   const [username, setUsername] = useState("User");
   const [ownerName, setOwnerName] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
+  const [contributors, setContributors] = useState([]);
   const searchParams = useSearchParams();
+  const { getCurrentUser } = useContext(AuthContext);
+
+  // Fetch current user data
+  useEffect(() => {
+    async function loadCurrentUser() {
+      try {
+        const userData = await getCurrentUser();
+        if (userData.status === "success") {
+          setCurrentUser(userData);
+
+          // If we already have document data, check if user is owner
+          if (document && document.ownerid) {
+            setIsOwner(userData.userid === document.ownerid);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching current user:", err);
+      }
+    }
+
+    loadCurrentUser();
+  }, [getCurrentUser]);
 
   // Fetch document owner when document loads
   useEffect(() => {
     async function fetchDocumentOwner() {
       if (!document || !document.ownerid) return;
+
+      // Check if current user is owner when document loads
+      if (currentUser) {
+        setIsOwner(currentUser.userid === document.ownerid);
+      }
 
       try {
         const { data, error } = await fetchUserById(document.ownerid);
@@ -46,8 +79,9 @@ export default function Home() {
     }
 
     fetchDocumentOwner();
-  }, [document]);
+  }, [document, currentUser]);
 
+  // Existing document fetch function remains the same
   useEffect(() => {
     async function fetchDocument() {
       try {
@@ -61,8 +95,30 @@ export default function Home() {
           } else if (data) {
             setDocument(data);
             setDocumentTitle(data.judul || "Untitled Document");
-            setDocumentDate(new Date(data.createtime).toLocaleDateString("id-ID"));
+
+            // Format dates to include both date and time
+            const dateTimeOptions = {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            };
+
+            // Set creation date with time
+            setDocumentDate(new Date(data.createtime).toLocaleString("id-ID", dateTimeOptions));
+
+            // Set edit date with time if it exists
+            setDocumentEditDate(
+              data.edittime ? new Date(data.edittime).toLocaleString("id-ID", dateTimeOptions) : "",
+            );
+
             setDocumentContent(data.isi || "Sorry, this document is empty.");
+
+            // If we already have current user data, check if user is owner
+            if (currentUser) {
+              setIsOwner(currentUser.userid === data.ownerid);
+            }
           }
         }
       } catch (err) {
@@ -74,6 +130,29 @@ export default function Home() {
 
     fetchDocument();
   }, []);
+
+  // New useEffect to fetch contributors when document loads
+  useEffect(() => {
+    async function fetchContributors() {
+      if (!document || !document.docid || !document.ownerid) return;
+
+      try {
+        const { data, error } = await fetchDocumentContributors(document.docid, document.ownerid);
+        if (error) {
+          console.error("Error fetching contributors:", error);
+          return;
+        }
+
+        if (data) {
+          setContributors(data);
+        }
+      } catch (err) {
+        console.error("Unexpected error fetching contributors:", err);
+      }
+    }
+
+    fetchContributors();
+  }, [document]);
 
   const handleSave = async () => {
     try {
@@ -102,9 +181,12 @@ export default function Home() {
             {/* access */}
             <div className="flex h-full w-[50%] flex-row items-center justify-end gap-4 text-[white]">
               <AccessDropdown onModeChange={setEditMode} initialMode={editMode} />
-              <ButtonContributor onClick={() => setOpen(true)}>Contributor</ButtonContributor>
+              {isOwner && (
+                <ButtonContributor onClick={() => setOpen(true)}>Contributor</ButtonContributor>
+              )}
             </div>
           </div>
+
           {/* bawah */}
           <div className="relative flex h-[88%] w-full flex-col gap-[12px] rounded-[10px] border-[1.5px] border-[#16223B] bg-white/40 px-3 py-3 text-[white] backdrop-blur-lg">
             {/* Judul dkk */}
@@ -112,8 +194,9 @@ export default function Home() {
               <HeaderDocuments
                 title={documentTitle}
                 createdAt={documentDate}
+                editedAt={documentEditDate}
                 username={ownerName || "Unknown Owner"}
-                contributors={[{ name: "Rijal" }, { name: "Polikarpus" }, { name: "Bernards" }]}
+                contributors={contributors}
                 className="w-full"
               />
             </div>
