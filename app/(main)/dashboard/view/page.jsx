@@ -1,12 +1,14 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
 import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import ButtonHome from "@/components/ButtonHome";
 import ButtonContributor from "@/components/ButtonContributor";
 import AccessDropdown from "@/components/AccessDropdown";
 import HeaderDocuments from "@/components/HeaderDocuments";
 import ButtonSave from "@/components/ButtonSave";
+import { fetchDocumentById } from "@/lib/query/documents";
 
 export default function Home() {
   // let { data, error } = await supabase.from("notes").select("*");
@@ -14,41 +16,39 @@ export default function Home() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [document, setDocument] = useState(null);
+  const [documentContent, setDocumentContent] = useState([]);
+  const [documentTitle, setDocumentTitle] = useState("");
+  const [documentDate, setDocumentDate] = useState("");
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    setLoading(false);
+    async function fetchDocument() {
+      try {
+        // Get document ID from URL query parameters
+        const docId = searchParams.get("id");
+
+        if (docId) {
+          const { data, error } = await fetchDocumentById(docId);
+
+          if (error) {
+            console.error("Error fetching document:", error);
+          } else if (data) {
+            setDocument(data);
+            setDocumentTitle(data.judul || "Untitled Document");
+            setDocumentDate(new Date(data.createtime).toLocaleDateString("id-ID"));
+            setDocumentContent(data.isi || "Sorry, this document is empty.");
+          }
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchDocument();
   }, []);
-
-  const exampleTexts = [
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor. Maecenas nisl est, ultrices nec congue eget, auctor vitae massa. 
-  Fusce luctus vestibulum augue ut aliquet. Nunc sagittis dictum nisi, sed ullamcorper ipsum dignissim ac. 
-  In at libero sed nunc venenatis imperdiet sed ornare turpis. Donec vitae dui eget tellus gravida venenatis. 
-  Integer fringilla congue eros non fermentum. Sed dapibus pulvinar nibh tempor porta.`,
-
-    `Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. 
-  Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus. 
-  Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. 
-  Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi.`,
-
-    `Suspendisse potenti. Sed lectus. Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, 
-  sem massa mattis sem, at interdum magna augue eget diam. Vestibulum ante ipsum primis in faucibus orci luctus et 
-  ultrices posuere cubilia Curae; Morbi lacinia molestie dui. Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. 
-  Morbi in ipsum sit amet pede facilisis laoreet. Donec lacus nunc, viverra nec.`,
-
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor. Maecenas nisl est, ultrices nec congue eget, auctor vitae massa. 
-  Fusce luctus vestibulum augue ut aliquet. Nunc sagittis dictum nisi, sed ullamcorper ipsum dignissim ac. 
-  In at libero sed nunc venenatis imperdiet sed ornare turpis. Donec vitae dui eget tellus gravida venenatis. 
-  Integer fringilla congue eros non fermentum. Sed dapibus pulvinar nibh tempor porta.`,
-
-    `Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. 
-  Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus. 
-  Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. 
-  Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi.`,
-
-    `Suspendisse potenti. Sed lectus. Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, 
-  sem massa mattis sem, at interdum magna augue eget diam. Vestibulum ante ipsum primis in faucibus orci luctus et 
-  ultrices posuere cubilia Curae; Morbi lacinia molestie dui. Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. 
-  Morbi in ipsum sit amet pede facilisis laoreet. Donec lacus nunc, viverra nec.`,
-  ];
 
   if (loading) return <Loading />;
   // const { data } = await supabase.from("notes").select("id");
@@ -76,8 +76,8 @@ export default function Home() {
             {/* Judul dkk */}
             <div className="flex h-[18%] w-full">
               <HeaderDocuments
-                title="PETUALANGAN RHIZAL BERAU MENCARI PASANGAN"
-                createdAt="15-05-2025"
+                title={documentTitle}
+                createdAt={documentDate}
                 username="Username"
                 contributors={[{ name: "Rijal" }, { name: "Polikarpus" }, { name: "Bernards" }]}
                 className="w-full"
@@ -85,9 +85,7 @@ export default function Home() {
             </div>
             {/* Isi */}
             <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex h-[82%] w-full flex-col items-center gap-6 overflow-y-auto px-6 py-4 pr-3 text-[black]">
-              {exampleTexts.map((text, idx) => (
-                <p key={idx}>{text}</p>
-              ))}
+              {documentContent}
             </div>
           </div>
           {/* save */}
