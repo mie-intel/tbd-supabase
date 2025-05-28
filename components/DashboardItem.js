@@ -14,6 +14,13 @@ export default function DashboardItem({
   isOwner = false,
   ...props
 }) {
+  // Fungsi untuk memotong teks dengan ellipsis
+  const truncateText = (text, maxLength = 50) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return `${text.substring(0, maxLength)}...`;
+  };
+
   return (
     <div
       className={cn(
@@ -31,7 +38,7 @@ export default function DashboardItem({
             {createdAt}
           </p>
           <p className="font-eudoxus-bold text-[12px] text-[#16223B] duration-300 ease-in-out sm:text-sm">
-            {viewDoc}
+            {truncateText(viewDoc)}
           </p>
         </div>
       </div>
