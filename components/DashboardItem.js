@@ -2,7 +2,18 @@ import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
 import { Info, SquarePen, Trash2 } from "lucide-react";
 
-export default function DashboardItem({ title, viewDoc, createdAt, className, ...props }) {
+export default function DashboardItem({
+  id,
+  title,
+  viewDoc,
+  createdAt,
+  onDelete,
+  onEdit,
+  onView,
+  className,
+  isOwner = false,
+  ...props
+}) {
   return (
     <div
       className={cn(
@@ -27,6 +38,7 @@ export default function DashboardItem({ title, viewDoc, createdAt, className, ..
       <div className="flex flex-col items-center gap-2 duration-300 ease-in-out md:flex-row md:gap-[20px]">
         <button
           type="button"
+          onClick={() => onView(id)}
           className="flex cursor-pointer items-center gap-[8px] rounded-full bg-[#5DF590] p-2 text-xl text-white duration-300 ease-in-out hover:bg-[#4FD07B] md:rounded-[5px] md:px-4 md:py-2.5"
         >
           <span className="font-eudoxus-medium hidden text-sm text-[#16223B] duration-300 ease-in-out md:inline">
@@ -39,6 +51,7 @@ export default function DashboardItem({ title, viewDoc, createdAt, className, ..
         </button>
         <button
           type="button"
+          onClick={() => onEdit(id)}
           className="flex cursor-pointer items-center gap-[8px] rounded-full bg-[#5DCCF5] p-2 text-xl text-white duration-300 ease-in-out hover:bg-[#4FAED0] md:rounded-[5px] md:px-4 md:py-2.5"
         >
           <span className="font-eudoxus-medium hidden text-sm text-[#16223B] duration-300 ease-in-out md:inline">
@@ -51,6 +64,7 @@ export default function DashboardItem({ title, viewDoc, createdAt, className, ..
         </button>
         <button
           type="button"
+          onClick={() => onDelete(id)}
           className="flex cursor-pointer items-center gap-[8px] rounded-full bg-[#F55D60] p-2 text-xl text-white duration-300 ease-in-out hover:bg-[#D04F52] md:rounded-[5px] md:px-4 md:py-2.5"
         >
           <span className="font-eudoxus-medium hidden text-sm text-[#16223B] duration-300 ease-in-out md:inline">
@@ -61,13 +75,23 @@ export default function DashboardItem({ title, viewDoc, createdAt, className, ..
             strokeWidth={2}
           />
         </button>
+        {/* Tombol delete hanya muncul jika user adalah owner DAN onDelete tidak null */}
+        {isOwner && onDelete && (
+          <button onClick={() => onDelete(docid)} className="delete-btn">
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );
 }
 DashboardItem.propTypes = {
-  viewDoc: PropTypes.isRequired,
-  createdAt: PropTypes.isRequired,
+  id: PropTypes.string.isRequired,
   title: PropTypes.node.isRequired,
+  viewDoc: PropTypes.string.isRequired,
+  createdAt: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onView: PropTypes.func.isRequired,
   className: PropTypes.string,
 };
