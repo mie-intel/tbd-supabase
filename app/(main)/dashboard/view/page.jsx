@@ -309,10 +309,12 @@ export default function Home() {
                 <textarea
                   value={documentContent}
                   onChange={handleContentChange}
-                  className="font-inherit h-full w-full resize-none border-none bg-transparent p-0 text-left focus:ring-0 focus:outline-none"
+                  className="font-eudoxus-sans h-full w-full resize-none border-none bg-transparent p-0 text-justify focus:ring-0 focus:outline-none"
                 />
               ) : (
-                documentContent
+                <div className="font-eudoxus-sans h-full w-full border-none bg-transparent p-0 text-justify whitespace-pre-wrap">
+                  {documentContent}
+                </div>
               )}
             </div>
           </div>
