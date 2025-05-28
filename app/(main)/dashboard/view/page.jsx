@@ -169,7 +169,7 @@ export default function Home() {
             );
 
             // Store original content to track changes
-            const content = data.isi || "Sorry, this document is empty.";
+            const content = data.isi;
             setDocumentContent(content);
             setOriginalContent(content);
             setHasChanges(false);
@@ -303,16 +303,22 @@ export default function Home() {
                 className="w-full"
               />
             </div>
+
+            {/* Divider between header and content - adjusted to match content padding AND scrollbar */}
+            <div className="w-full px-6 pr-3">
+              <div className="w-full border-b border-[#16223B]/30"></div>
+            </div>
+
             {/* Isi */}
             <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex h-[82%] w-full flex-col items-start gap-6 overflow-y-auto px-6 py-4 pr-3 text-[black]">
               {editMode === "Edit" ? (
                 <textarea
                   value={documentContent}
                   onChange={handleContentChange}
-                  className="font-eudoxus-sans h-full w-full resize-none border-none bg-transparent p-0 text-justify focus:ring-0 focus:outline-none"
+                  className="font-eudoxus-sans h-full w-full resize-none rounded-md border border-[#16223B]/20 bg-transparent p-3 text-justify focus:border-[#16223B]/40 focus:outline-none"
                 />
               ) : (
-                <div className="font-eudoxus-sans h-full w-full border-none bg-transparent p-0 text-justify whitespace-pre-wrap">
+                <div className="font-eudoxus-sans h-full w-full rounded-md border border-[#16223B]/20 bg-transparent p-3 text-justify whitespace-pre-wrap">
                   {documentContent}
                 </div>
               )}

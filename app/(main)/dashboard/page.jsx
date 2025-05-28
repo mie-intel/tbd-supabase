@@ -1,5 +1,6 @@
 "use client";
-import { addDocument, fetchAllDocuments, testFetch } from "@/lib/query/documents";
+import { addDocument, fetchAllDocuments, checkDocumentIdExists } from "@/lib/query/documents";
+import { addDocumentContributor } from "@/lib/query/access";
 import { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import ButtonAdd from "@/components/ButtonAddDoc";
@@ -19,6 +20,7 @@ const test = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   // TESTTT munculin data
   const [openModal, setOpenModal] = useState(false);
   const [documents, setDocuments] = useState(test);
@@ -26,11 +28,35 @@ export default function Home() {
   const [judul, setJudul] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Fungsi untuk get current user (contoh, sesuaikan dengan auth system Anda)
-  const getCurrentUser = async () => {
-    // Implementasi sesuai sistem auth Anda
-    // Contoh sederhana:
-    return { userid: 1 }; // atau ambil dari session/context
+  // Get the getCurrentUser function from context
+  const { getCurrentUser } = useContext(AuthContext);
+
+  // Generate a random 5-digit document ID
+  const generateUniqueDocId = async () => {
+    // Keep trying until we find an unused ID
+    let isUnique = false;
+    let newDocId;
+
+    while (!isUnique) {
+      // Generate a 5-digit number (10000-99999)
+      const randomDigits = Math.floor(10000 + Math.random() * 90000);
+
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      newDocId = `${year}${month}${day}-${randomDigits}`;
+
+      // Check if this ID already exists
+      const { exists, error } = await checkDocumentIdExists(newDocId);
+
+      if (!error && !exists) {
+        isUnique = true;
+      }
+    }
+
+    return newDocId;
   };
 
   // Fungsi untuk menambah dokumen
@@ -42,42 +68,53 @@ export default function Home() {
 
     setLoading(true);
     try {
-      const user = await getCurrentUser();
-      if (!user) {
+      const userData = await getCurrentUser();
+      if (userData.status !== "success") {
         alert("User tidak ditemukan!");
         setLoading(false);
         return;
       }
 
-      const { data, error } = await addDocument(judul, user.userid);
+      // Generate a unique document ID
+      const uniqueDocId = await generateUniqueDocId();
+
+      // Add the document with our custom ID
+      const { data, error } = await addDocument(judul, userData.userid, uniqueDocId);
 
       if (error) {
         console.error("Error adding document:", error);
         alert("Gagal menambahkan dokumen!");
+        setLoading(false);
         return;
       }
 
-      // Update state documents dengan data baru
+      // Get the new document ID
+      const newDocId = data[0].docid;
+
+      // Add owner to access table (even though they're the owner, this makes queries easier)
+      await addDocumentContributor(newDocId, userData.userid);
+
+      // Update local state with the new document
       if (data && data[0]) {
         const newDoc = {
           id: data[0].docid,
           title: data[0].judul,
           isi: data[0].isi || "",
-          createdAt: new Date(data[0].createtime).toISOString().split('T')[0],
+          createdAt: new Date(data[0].createtime).toISOString().split("T")[0],
           viewDoc: data[0].isi || "",
         };
-        setDocuments(prev => [newDoc, ...prev]);
+        setDocuments((prev) => [newDoc, ...prev]);
       }
 
-      // Reset form dan tutup modal
+      // Reset form state
       setJudul("");
       setOpenModal(false);
-      alert("Dokumen berhasil ditambahkan!");
 
+      // Redirect to the document view page
+      router.push(`/dashboard/view?id=${newDocId}`);
     } catch (error) {
       console.error("Error:", error);
       alert("Terjadi kesalahan!");
-    } finally {
       setLoading(false);
     }
   };
@@ -96,11 +133,11 @@ export default function Home() {
       }
 
       if (data) {
-        const formattedDocs = data.map(doc => ({
+        const formattedDocs = data.map((doc) => ({
           id: doc.docid,
           title: doc.judul,
           isi: doc.isi || "",
-          createdAt: new Date(doc.createtime).toISOString().split('T')[0],
+          createdAt: new Date(doc.createtime).toISOString().split("T")[0],
           viewDoc: doc.isi || "",
         }));
         setDocuments(formattedDocs);
