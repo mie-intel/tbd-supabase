@@ -176,36 +176,48 @@ export default function Home() {
   };
 
   // Fungsi untuk memulai proses delete (menampilkan popup konfirmasi)
-// Fungsi untuk memulai proses delete (menampilkan popup konfirmasi)
   const handleDeleteDocument = async (docid) => {
     console.log("handleDeleteDocument called with docid:", docid);
     
-    // Cari dokumen yang akan dihapus
-    const docToDelete = documents.find(doc => doc.id === docid);
-    console.log("Document to delete:", docToDelete);
-    
-    // Dapatkan data user saat ini
-    const userData = await getCurrentUser();
-    
-    // Cek apakah user adalah owner dokumen ini
-    const isOwner = docToDelete?.ownerid === userData.userid;
-    
-    if (!isOwner) {
-      // Jika bukan owner, tampilkan popup info
+    try {
+      // Get current user
+      const userData = await getCurrentUser();
+      if (!userData || !userData.userid) {
+        alert("User not found");
+        return;
+      }
+
+      // Fetch document details to check ownership
+      const { data: docData, error: docError } = await fetchDocumentById(docid);
+      if (docError || !docData) {
+        console.error("Error fetching document:", docError);
+        alert("Failed to fetch document details");
+        return;
+      }
+
+      // Check if current user is the owner
+      const isOwner = docData.ownerid === userData.userid;
+      
+      // Find the document in local state for display purposes
+      const localDoc = documents.find(doc => doc.id === docid);
+      
+      if (!localDoc) {
+        alert("Document not found in local state");
+        return;
+      }
+
+      // Set document to delete with ownership info
       setDocumentToDelete({
-        ...docToDelete,
-        isOwner: false
+        ...localDoc,
+        isOwner: isOwner,
+        ownerid: docData.ownerid // Include actual ownerid from database
       });
+      
       setDeleteModal(true);
-      return;
+    } catch (error) {
+      console.error("Error in handleDeleteDocument:", error);
+      alert("An error occurred while checking document ownership");
     }
-    
-    // Jika owner, lanjutkan dengan proses delete biasa
-    setDocumentToDelete({
-      ...docToDelete,
-      isOwner: true
-    });
-    setDeleteModal(true);
   };
 
   // Fungsi untuk konfirmasi delete
@@ -461,14 +473,13 @@ export default function Home() {
           </div>
         )}
 
-        {/* Delete Confirmation Modal */}
         {deleteModal && documentToDelete && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="relative w-[90%] max-w-md rounded-[15px] border-[1.5px] border-[#16223B] bg-white p-6 shadow-lg">
               {/* Header Modal */}
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-eudoxus-medium text-lg text-[#16223B]">
-                  {documentToDelete.isOwner ? "Konfirmasi Hapus" : "Akses Ditolak"}
+                  {documentToDelete.isOwner ? "Konfirmasi Hapus Dokumen" : "Akses Ditolak"}
                 </h2>
                 <button
                   onClick={cancelDelete}
@@ -491,11 +502,11 @@ export default function Home() {
                         <strong>Judul:</strong> {documentToDelete.title}
                       </p>
                       <p className="font-eudoxus-regular text-xs text-[#16223B]/70 mt-1">
-                        <strong>Dibuat:</strong> {documentToDelete.createdAt}
+                        <strong>ID Dokumen:</strong> {documentToDelete.id}
                       </p>
                     </div>
                     <p className="font-eudoxus-regular text-xs text-red-600 mt-2">
-                      ⚠️ Tindakan ini tidak dapat dibatalkan!
+                      ⚠️ Tindakan ini akan menghapus dokumen secara permanen!
                     </p>
                   </>
                 ) : (
@@ -506,19 +517,16 @@ export default function Home() {
                       </svg>
                     </div>
                     <p className="font-eudoxus-medium text-center text-sm text-[#16223B] mb-3">
-                      Maaf, Anda tidak memiliki izin untuk menghapus dokumen ini.
+                      Hanya pemilik dokumen yang dapat menghapusnya
                     </p>
                     <div className="rounded-lg border-[1.5px] border-[#16223B]/20 bg-[#16223B]/5 p-3">
                       <p className="font-eudoxus-medium text-sm text-[#16223B]">
                         <strong>Judul:</strong> {documentToDelete.title}
                       </p>
                       <p className="font-eudoxus-regular text-xs text-[#16223B]/70 mt-1">
-                        <strong>Pemilik:</strong> Hanya pemilik dokumen yang dapat menghapusnya
+                        <strong>ID Dokumen:</strong> {documentToDelete.id}
                       </p>
                     </div>
-                    <p className="font-eudoxus-regular text-xs text-[#16223B]/70 mt-2 text-center">
-                      Silakan hubungi pemilik dokumen jika Anda memerlukan bantuan.
-                    </p>
                   </>
                 )}
               </div>
@@ -529,7 +537,7 @@ export default function Home() {
                   onClick={cancelDelete}
                   className="flex-1 rounded-lg border-[1.5px] border-[#16223B]/30 py-2 text-[#16223B] transition-colors hover:bg-[#16223B]/10"
                 >
-                  Tutup
+                  {documentToDelete.isOwner ? "Batal" : "Tutup"}
                 </button>
                 
                 {documentToDelete.isOwner && (
@@ -538,7 +546,7 @@ export default function Home() {
                     disabled={deleteLoading}
                     className="flex-1 rounded-lg bg-red-500 py-2 text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {deleteLoading ? "Menghapus..." : "Hapus"}
+                    {deleteLoading ? "Menghapus..." : "Ya, Hapus"}
                   </button>
                 )}
               </div>
