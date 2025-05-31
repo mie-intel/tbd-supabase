@@ -1,5 +1,11 @@
 "use client";
-import { fetchAllDocuments, checkDocumentIdExists, addDocument, deleteDocument, fetchDocumentById } from "@/lib/query/documents";
+import {
+  fetchAllDocuments,
+  checkDocumentIdExists,
+  addDocument,
+  deleteDocument,
+  fetchDocumentById,
+} from "@/lib/query/documents";
 import { fetchDocumentContributors } from "@/lib/query/access";
 import { addDocumentContributor } from "@/lib/query/access";
 import { useEffect, useState, useContext } from "react";
@@ -11,22 +17,12 @@ import SearchBox from "@/components/SearchBox";
 import DashboardItem from "@/components/DashboardItem";
 import { AuthContext } from "@/components/AuthProvider";
 
-const test = [
-  {
-    id: 1,
-    title: "Judul 1",
-    isi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatibus.",
-    createdAt: "2023-10-01",
-    viewDoc: "25/05/2025",
-  },
-];
-
 export default function Home() {
   const router = useRouter();
   // State untuk modal tambah dokumen
   const [openModal, setOpenModal] = useState(false);
   const [documents, setDocuments] = useState([]); // Initialize as an empty array
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [judul, setJudul] = useState("");
   const [searchQuery, setSearchQuery] = useState(""); // State untuk pencarian
 
@@ -169,6 +165,7 @@ export default function Home() {
         console.log("Formatted documents:", formattedDocs);
         setDocuments(formattedDocs);
       }
+      setLoading(false);
     } catch (error) {
       console.error("Unexpected error in loadDocuments:", error);
       alert("Terjadi kesalahan tak terduga saat memuat dokumen.");
@@ -178,7 +175,7 @@ export default function Home() {
   // Fungsi untuk memulai proses delete (menampilkan popup konfirmasi)
   const handleDeleteDocument = async (docid) => {
     console.log("handleDeleteDocument called with docid:", docid);
-    
+
     try {
       // Get current user
       const userData = await getCurrentUser();
@@ -197,10 +194,10 @@ export default function Home() {
 
       // Check if current user is the owner
       const isOwner = docData.ownerid === userData.userid;
-      
+
       // Find the document in local state for display purposes
-      const localDoc = documents.find(doc => doc.id === docid);
-      
+      const localDoc = documents.find((doc) => doc.id === docid);
+
       if (!localDoc) {
         alert("Document not found in local state");
         return;
@@ -210,9 +207,9 @@ export default function Home() {
       setDocumentToDelete({
         ...localDoc,
         isOwner: isOwner,
-        ownerid: docData.ownerid // Include actual ownerid from database
+        ownerid: docData.ownerid, // Include actual ownerid from database
       });
-      
+
       setDeleteModal(true);
     } catch (error) {
       console.error("Error in handleDeleteDocument:", error);
@@ -239,7 +236,7 @@ export default function Home() {
       // Debug: cek nilai yang akan dikirim
       console.log("Mengirim ke deleteDocument:", {
         docid: documentToDelete.id,
-        ownerid: userData.userid
+        ownerid: userData.userid,
       });
 
       // Panggil deleteDocument dengan docid dan ownerid
@@ -257,12 +254,12 @@ export default function Home() {
 
       // Hapus dokumen dari state
       setDocuments((prev) => prev.filter((doc) => doc.id !== documentToDelete.id));
-      
+
       // Reset state dan tutup modal
       setDeleteModal(false);
       setDocumentToDelete(null);
       setDeleteLoading(false);
-      
+
       alert("Dokumen berhasil dihapus.");
     } catch (error) {
       console.error("Unexpected error deleting document:", error);
@@ -282,7 +279,7 @@ export default function Home() {
   const handleViewDocument = async (docid) => {
     setDetailLoading(true);
     setDetailModal(true);
-    
+
     try {
       // Fetch document detail
       const { data: docData, error: docError } = await fetchDocumentById(docid);
@@ -296,13 +293,13 @@ export default function Home() {
 
       // Get current user to check if they're the owner
       const userData = await getCurrentUser();
-      
+
       // Fetch contributors - pass the ownerid from document data
       const { data: contributorsData, error: contributorsError } = await fetchDocumentContributors(
-        docid, 
-        docData.ownerid // Pass the ownerid from the document data
+        docid,
+        docData.ownerid, // Pass the ownerid from the document data
       );
-      
+
       if (contributorsError) {
         console.error("Error fetching contributors:", contributorsError);
         setContributors([]);
@@ -345,7 +342,7 @@ export default function Home() {
         month: "long",
         day: "numeric",
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
       });
     } catch (error) {
       return "Format tanggal tidak valid";
@@ -353,13 +350,14 @@ export default function Home() {
   };
 
   // Filter documents berdasarkan search query
-   const filteredDocuments = useMemo(() => {
+  const filteredDocuments = useMemo(() => {
     if (!searchQuery) return documents;
-    
-    return documents.filter(doc => 
-      doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.isi.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.id.toLowerCase().includes(searchQuery.toLowerCase())
+
+    return documents.filter(
+      (doc) =>
+        doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        doc.isi.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        doc.id.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [documents, searchQuery]);
 
@@ -376,39 +374,42 @@ export default function Home() {
         </div>
         <div className="relative flex h-[75%] w-[90%] flex-col gap-[12px] rounded-[15px] border-[1.5px] border-[#16223B] bg-white/20 px-3 py-3 backdrop-blur-lg">
           {/* Search Box */}
+
           <div className="flex w-full items-center justify-between">
             <span className="font-eudoxus-medium text-md text-[#16223B] md:text-xl">
               Daftar Dokumen
             </span>
-            <SearchBox 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <SearchBox value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
           </div>
+          {loading && <Loading />}
           {/* Dashboard Item */}
           <div className="scrollbar-thin scrollbar-thumb-[#16223B]/70 scrollbar-track-[#16223B]/20 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flex flex-col gap-4 overflow-y-auto pr-3">
-                      {filteredDocuments.length > 0 ? (
-                        filteredDocuments.map((item) => (
-                          <DashboardItem
-                            key={item.id}
-                            title={item.title}
-                            createdAt={item.createdAt}
-                            viewDoc={item.isi}
-                            onDelete={() => handleDeleteDocument(item.id)}
-                            onEdit={() => handleEditDocument(item.id)}
-                            onView={() => handleViewDocument(item.id)}
-                            docid={item.id}
-                          />
-                        ))
-                      ) : (
-                        <div className="flex items-center justify-center py-8">
-                          <p className="text-[#16223B]/70">
-                            {searchQuery ? "Tidak ada dokumen yang cocok dengan pencarian" : "Tidak ada dokumen"}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+            {filteredDocuments.length > 0 ? (
+              filteredDocuments.map((item) => (
+                <DashboardItem
+                  key={item.id}
+                  title={item.title}
+                  createdAt={item.createdAt}
+                  viewDoc={item.isi}
+                  onDelete={() => handleDeleteDocument(item.id)}
+                  onEdit={() => handleEditDocument(item.id)}
+                  onView={() => handleViewDocument(item.id)}
+                  docid={item.id}
+                />
+              ))
+            ) : (
+              <div className="flex items-center justify-center py-8">
+                <p className="text-[#16223B]/70">
+                  {!loading &&
+                    (searchQuery
+                      ? "Tidak ada dokumen yang cocok dengan pencarian"
+                      : "Tidak ada dokumen")}
+                  {}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Modal Popup Tambah Dokumen */}
         {openModal && (
@@ -501,29 +502,39 @@ export default function Home() {
                       <p className="font-eudoxus-medium text-sm text-[#16223B]">
                         <strong>Judul:</strong> {documentToDelete.title}
                       </p>
-                      <p className="font-eudoxus-regular text-xs text-[#16223B]/70 mt-1">
+                      <p className="font-eudoxus-regular mt-1 text-xs text-[#16223B]/70">
                         <strong>ID Dokumen:</strong> {documentToDelete.id}
                       </p>
                     </div>
-                    <p className="font-eudoxus-regular text-xs text-red-600 mt-2">
+                    <p className="font-eudoxus-regular mt-2 text-xs text-red-600">
                       ⚠️ Tindakan ini akan menghapus dokumen secara permanen!
                     </p>
                   </>
                 ) : (
                   <>
-                    <div className="flex items-center justify-center mb-4">
-                      <svg className="w-12 h-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <div className="mb-4 flex items-center justify-center">
+                      <svg
+                        className="h-12 w-12 text-yellow-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
                       </svg>
                     </div>
-                    <p className="font-eudoxus-medium text-center text-sm text-[#16223B] mb-3">
+                    <p className="font-eudoxus-medium mb-3 text-center text-sm text-[#16223B]">
                       Hanya pemilik dokumen yang dapat menghapusnya
                     </p>
                     <div className="rounded-lg border-[1.5px] border-[#16223B]/20 bg-[#16223B]/5 p-3">
                       <p className="font-eudoxus-medium text-sm text-[#16223B]">
                         <strong>Judul:</strong> {documentToDelete.title}
                       </p>
-                      <p className="font-eudoxus-regular text-xs text-[#16223B]/70 mt-1">
+                      <p className="font-eudoxus-regular mt-1 text-xs text-[#16223B]/70">
                         <strong>ID Dokumen:</strong> {documentToDelete.id}
                       </p>
                     </div>
@@ -539,7 +550,7 @@ export default function Home() {
                 >
                   {documentToDelete.isOwner ? "Batal" : "Tutup"}
                 </button>
-                
+
                 {documentToDelete.isOwner && (
                   <button
                     onClick={confirmDeleteDocument}
@@ -557,7 +568,7 @@ export default function Home() {
         {/* Detail Document Modal */}
         {detailModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="relative w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto rounded-[15px] border-[1.5px] border-[#16223B] bg-white p-6 shadow-lg">
+            <div className="relative max-h-[90vh] w-[90%] max-w-2xl overflow-y-auto rounded-[15px] border-[1.5px] border-[#16223B] bg-white p-6 shadow-lg">
               {/* Header Modal */}
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-eudoxus-medium text-lg text-[#16223B]">Detail Dokumen</h2>
@@ -573,35 +584,49 @@ export default function Home() {
               {/* Content */}
               {detailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#16223B]"></div>
+                  <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[#16223B]"></div>
                   <span className="ml-3 text-[#16223B]">Memuat detail dokumen...</span>
                 </div>
               ) : documentDetail ? (
                 <div className="space-y-4">
                   {/* Document Info */}
                   <div className="rounded-lg border-[1.5px] border-[#16223B]/20 bg-[#16223B]/5 p-4">
-                    <h3 className="font-eudoxus-medium text-lg text-[#16223B] mb-3">Informasi Dokumen</h3>
-                    
+                    <h3 className="font-eudoxus-medium mb-3 text-lg text-[#16223B]">
+                      Informasi Dokumen
+                    </h3>
+
                     <div className="grid gap-3">
                       <div>
-                        <span className="font-eudoxus-medium text-sm text-[#16223B]">ID Dokumen:</span>
-                        <p className="font-eudoxus-regular text-sm text-[#16223B]/80 mt-1">{documentDetail.docid}</p>
+                        <span className="font-eudoxus-medium text-sm text-[#16223B]">
+                          ID Dokumen:
+                        </span>
+                        <p className="font-eudoxus-regular mt-1 text-sm text-[#16223B]/80">
+                          {documentDetail.docid}
+                        </p>
                       </div>
-                      
+
                       <div>
                         <span className="font-eudoxus-medium text-sm text-[#16223B]">Judul:</span>
-                        <p className="font-eudoxus-regular text-sm text-[#16223B]/80 mt-1">{documentDetail.judul}</p>
+                        <p className="font-eudoxus-regular mt-1 text-sm text-[#16223B]/80">
+                          {documentDetail.judul}
+                        </p>
                       </div>
-                      
+
                       <div>
                         <span className="font-eudoxus-medium text-sm text-[#16223B]">Dibuat:</span>
-                        <p className="font-eudoxus-regular text-sm text-[#16223B]/80 mt-1">{formatDate(documentDetail.createtime)}</p>
+                        <p className="font-eudoxus-regular mt-1 text-sm text-[#16223B]/80">
+                          {formatDate(documentDetail.createtime)}
+                        </p>
                       </div>
-                      
+
                       <div>
-                        <span className="font-eudoxus-medium text-sm text-[#16223B]">Terakhir Diedit:</span>
-                        <p className="font-eudoxus-regular text-sm text-[#16223B]/80 mt-1">
-                          {documentDetail.edittime ? formatDate(documentDetail.edittime) : "Belum pernah diedit"}
+                        <span className="font-eudoxus-medium text-sm text-[#16223B]">
+                          Terakhir Diedit:
+                        </span>
+                        <p className="font-eudoxus-regular mt-1 text-sm text-[#16223B]/80">
+                          {documentDetail.edittime
+                            ? formatDate(documentDetail.edittime)
+                            : "Belum pernah diedit"}
                         </p>
                       </div>
                     </div>
@@ -609,12 +634,15 @@ export default function Home() {
 
                   {/* Contributors Info */}
                   <div className="rounded-lg border-[1.5px] border-[#16223B]/20 bg-[#16223B]/5 p-4">
-                    <h3 className="font-eudoxus-medium text-lg text-[#16223B] mb-3">Kontributor</h3>
-                    
+                    <h3 className="font-eudoxus-medium mb-3 text-lg text-[#16223B]">Kontributor</h3>
+
                     {contributors.length > 0 ? (
                       <div className="space-y-2">
                         {contributors.map((contributor, index) => (
-                          <div key={index} className="flex items-center justify-between bg-white/50 rounded-lg p-3">
+                          <div
+                            key={index}
+                            className="flex items-center justify-between rounded-lg bg-white/50 p-3"
+                          >
                             <div>
                               <p className="font-eudoxus-medium text-sm text-[#16223B]">
                                 {contributor.name}
@@ -623,11 +651,11 @@ export default function Home() {
                             <div className="text-right">
                               <p className="font-eudoxus-regular text-xs text-[#16223B]/80">
                                 {contributor.isOwner ? (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
                                     Owner
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                  <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                                     Contributor
                                   </span>
                                 )}
@@ -637,14 +665,14 @@ export default function Home() {
                         ))}
                       </div>
                     ) : (
-                      <p className="font-eudoxus-regular text-sm text-[#16223B]/60 text-center py-4">
+                      <p className="font-eudoxus-regular py-4 text-center text-sm text-[#16223B]/60">
                         Tidak ada data kontributor
                       </p>
                     )}
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8">
+                <div className="py-8 text-center">
                   <p className="font-eudoxus-regular text-sm text-[#16223B]/60">
                     Gagal memuat detail dokumen
                   </p>
@@ -655,7 +683,7 @@ export default function Home() {
               <div className="mt-6 flex justify-end">
                 <button
                   onClick={closeDetailModal}
-                  className="px-6 py-2 rounded-lg bg-[#16223B] text-white transition-colors hover:bg-[#16223B]/90"
+                  className="rounded-lg bg-[#16223B] px-6 py-2 text-white transition-colors hover:bg-[#16223B]/90"
                   disabled={detailLoading}
                 >
                   Tutup

@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function HeaderDocuments({
   title,
@@ -12,6 +13,7 @@ export default function HeaderDocuments({
 }) {
   // Check if document has been edited (editedAt exists and is not empty)
   const isEdited = Boolean(editedAt && editedAt.trim());
+  const anotherContributors = contributors.filter((contributor) => contributor.name !== username);
 
   return (
     <div className={cn("flex h-full w-full flex-row px-6 py-4", className)} {...props}>
@@ -24,9 +26,9 @@ export default function HeaderDocuments({
         </div>
         <div className="font-semibold text-slate-900">
           <span>By:</span>{" "}
-          <a href="#" className="text-blue-600 hover:underline">
+          <Link href="#" className="text-blue-600 hover:underline">
             {username}
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -34,20 +36,20 @@ export default function HeaderDocuments({
       <div className="font-eudoxus-sans ml-auto flex w-[25%] items-center text-sm font-semibold text-blue-600">
         <span className="whitespace-nowrap">Contributors:</span>
         <div className="ml-1 max-w-[70%] overflow-hidden text-ellipsis whitespace-nowrap">
-          {contributors.length > 0 ? (
-            <a
+          {anotherContributors.length > 0 ? (
+            <Link
               href="#"
               className="hover:underline"
-              title={contributors.map((c) => c.name).join(", ")}
+              title={anotherContributors.map((c) => c.name).join(", ")}
             >
               {" "}
-              {contributors.map((contributor, index) => (
+              {anotherContributors.map((contributor, index) => (
                 <span key={index}>
                   {index > 0 ? ", " : ""}
                   {contributor.name}
                 </span>
               ))}
-            </a>
+            </Link>
           ) : (
             <span className="text-gray-500">No contributors</span>
           )}

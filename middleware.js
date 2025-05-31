@@ -6,15 +6,15 @@ const isAuthPage = (pathname) => {
 
 export function middleware(request) {
   const user = request.cookies.get("access_token");
-  //   Arahin ke sign-in page
-  //   if (!user && !isAuthPage(request.nextUrl.pathname)) {
-  //     return NextResponse.redirect(new URL("/sign-in", request.url));
-  //   }
+  // Arahin ke sign-in page
+  if (!user && !isAuthPage(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
 
-  //   // Arahin ke dashboard
-  //   if (user && isAuthPage(request.nextUrl.pathname)) {
-  //     return NextResponse.redirect(new URL("/dashboard", request.url));
-  //   }
+  // Arahin ke dashboard
+  if (user && isAuthPage(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   return NextResponse.next();
 }

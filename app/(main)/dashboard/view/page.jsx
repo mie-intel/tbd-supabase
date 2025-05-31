@@ -1,6 +1,6 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
-import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import ButtonHome from "@/components/ButtonHome";
@@ -25,7 +25,6 @@ export default function Home() {
   const [documentDate, setDocumentDate] = useState("");
   const [documentEditDate, setDocumentEditDate] = useState("");
   const [editMode, setEditMode] = useState("Edit");
-  const [username, setUsername] = useState("User");
   const [ownerName, setOwnerName] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
@@ -125,7 +124,7 @@ export default function Home() {
         }
 
         if (data) {
-          setOwnerName(data.username || data.nama || "Unknown");
+          setOwnerName(data.nama || "Unknown");
         }
       } catch (err) {
         console.error("Unexpected error fetching owner:", err);
@@ -279,7 +278,7 @@ export default function Home() {
           <div className="relative flex h-[7%] w-full items-center justify-between text-[white]">
             {/* home */}
             <div className="w-[50%]">
-              <ButtonHome></ButtonHome>
+              <ButtonHome />
             </div>
             {/* access */}
             <div className="flex h-full w-[50%] flex-row items-center justify-end gap-4 text-[white]">
@@ -306,7 +305,7 @@ export default function Home() {
 
             {/* Divider between header and content - adjusted to match content padding AND scrollbar */}
             <div className="w-full px-6 pr-3">
-              <div className="w-full border-b border-[#16223B]/30"></div>
+              <div className="w-full border-b border-[#16223B]/30" />
             </div>
 
             {/* Isi */}

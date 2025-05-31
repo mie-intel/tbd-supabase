@@ -127,35 +127,37 @@ export default function Page() {
 
   return (
     <>
-      <div className="relative flex h-full w-full items-center justify-center">
-        <Container className="relative flex w-[90%] flex-col items-center justify-center gap-3 rounded-xl border-2 border-[#EFF4FE] bg-white/30 px-[3%] py-20 text-[#213356] md:w-md lg:w-xl xl:w-2xl">
-          <h2 className="font-eudoxus-bold text-4xl text-[#213356] sm:text-5xl lg:text-6xl">
-            Register
-          </h2>
-          <div className="mt-6 flex w-full flex-col gap-4">
-            <InputWrapper ref={nameRef} icon={UserRoundPen} placeholder="Name" />
-            <InputWrapper ref={emailRef} icon={User} placeholder="Email" />
-            <InputWrapper ref={passwordRef} icon={Lock} placeholder="Password" />
-            <InputWrapper
-              ref={confirmPasswordRef}
-              icon={BadgeCheck}
-              placeholder="Confirm Password"
-            />
-            {error && (
-              <p className="font-eudoxus-medium text-center text-sm text-[#FF0000] lg:text-xl">
-                {error}
-              </p>
-            )}
-            <ButtonSubmit onClick={handleSubmit}>Create Account</ButtonSubmit>
-          </div>
-          <p className="font-eudoxus-bold text-sm text-white lg:mt-3 lg:text-xl">
-            Already have an account?{" "}
-            <span className="text-[#213356] duration-500 hover:text-[#F5C45E]">
-              <Link href="/sign-in">Sign In</Link>
-            </span>
-          </p>
-        </Container>
-      </div>
+      <main className="relative h-screen w-full bg-[url('/bg-comp.webp')] bg-cover">
+        <div className="relative flex h-full w-full items-center justify-center">
+          <Container className="relative flex w-[90%] flex-col items-center justify-center gap-3 rounded-xl border-2 border-[#EFF4FE] bg-white/30 px-[3%] py-20 text-[#213356] md:w-md lg:w-xl xl:w-2xl">
+            <h2 className="font-eudoxus-bold text-4xl text-[#213356] sm:text-5xl lg:text-6xl">
+              Register
+            </h2>
+            <div className="mt-6 flex w-full flex-col gap-4">
+              <InputWrapper ref={nameRef} icon={UserRoundPen} placeholder="Name" />
+              <InputWrapper ref={emailRef} icon={User} placeholder="Email" />
+              <InputWrapper ref={passwordRef} icon={Lock} placeholder="Password" />
+              <InputWrapper
+                ref={confirmPasswordRef}
+                icon={BadgeCheck}
+                placeholder="Confirm Password"
+              />
+              {error && (
+                <p className="font-eudoxus-medium text-center text-sm text-[#FF0000] lg:text-xl">
+                  {error}
+                </p>
+              )}
+              <ButtonSubmit onClick={handleSubmit}>Create Account</ButtonSubmit>
+            </div>
+            <p className="font-eudoxus-bold text-sm text-white lg:mt-3 lg:text-xl">
+              Already have an account?{" "}
+              <span className="text-[#213356] duration-500 hover:text-[#F5C45E]">
+                <Link href="/sign-in">Sign In</Link>
+              </span>
+            </p>
+          </Container>
+        </div>
+      </main>
     </>
   );
 }

@@ -101,4 +101,5 @@ DashboardItem.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onView: PropTypes.func.isRequired,
   className: PropTypes.string,
+  isOwner: PropTypes.bool,
 };

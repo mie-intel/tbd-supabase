@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { fetchAllUsersExcept } from "@/lib/query/users";
 import { addDocumentContributor, removeDocumentContributor } from "@/lib/query/access";
 import { createClient } from "@/utils/supabase/client";
+import PropTypes from "prop-types";
 
 export default function ContributorPopup({ onClose, ownerUserId, docId }) {
   const [selected, setSelected] = useState([]);
@@ -106,9 +107,9 @@ export default function ContributorPopup({ onClose, ownerUserId, docId }) {
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="relative w-[90%] max-w-md rounded-lg bg-white p-6 shadow-lg">
-        <div className="flex items-center justify-between border-b pb-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center rounded-lg bg-black/40">
+      <div className="relative w-[90%] max-w-md rounded-2xl bg-white p-6 shadow-lg">
+        <div className="flex items-center justify-between rounded-lg border-b pb-2">
           <h2 className="font-eudoxus-bold text-xl text-[#16223B]">Tambahkan Contributor</h2>
           <button onClick={onClose} disabled={saving}>
             <X className="h-5 w-5 text-gray-700" />
@@ -133,7 +134,7 @@ export default function ContributorPopup({ onClose, ownerUserId, docId }) {
                 <span className="text-sm text-black sm:text-base">
                   {user.nama || user.username || "Unknown user"}
                 </span>
-                <div
+                <button
                   className={`h-5 w-5 cursor-pointer rounded-sm border border-black ${saving ? "opacity-50" : ""}`}
                   onClick={() => !saving && toggleSelect(user.userid)}
                 >
@@ -142,7 +143,7 @@ export default function ContributorPopup({ onClose, ownerUserId, docId }) {
                       <span className="text-white">✓</span>
                     </div>
                   )}
-                </div>
+                </button>
               </div>
             ))
           ) : (
@@ -163,3 +164,9 @@ export default function ContributorPopup({ onClose, ownerUserId, docId }) {
     </div>
   );
 }
+
+ContributorPopup.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  ownerUserId: PropTypes.string.isRequired,
+  docId: PropTypes.string.isRequired,
+};

@@ -9,14 +9,11 @@ import React from "react";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/components/AuthProvider";
-
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+import PropTypes from "prop-types";
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "Documents",
+  title: "Docsify",
+  description: "Docsify - Documentation Made Easy",
 };
 
 export default function RootLayout({ children }) {
@@ -31,12 +28,12 @@ export default function RootLayout({ children }) {
           EudoxusRegular.variable,
         )}
       >
-        <AuthProvider>
-          <main className="relative h-screen w-full bg-[url('/bg-comp.webp')] bg-cover">
-            {children}
-          </main>
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
 }
+
+RootLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
