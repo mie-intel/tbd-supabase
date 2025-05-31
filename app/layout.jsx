@@ -15,7 +15,7 @@ import Loading from "@/components/Loading";
 
 export const metadata = {
   title: "TBD Supabase",
-  description: "TBD Supabase - Documentation Made Easy",
+  description: "TBD Supabase - A simple Document management system using Supabase",
   icons: {
     icon: "/favicon.ico",
   },
