@@ -14,8 +14,8 @@ import PropTypes from "prop-types";
 import Loading from "@/components/Loading";
 
 export const metadata = {
-  title: "Docsify",
-  description: "Docsify - Documentation Made Easy",
+  title: "TBD Supabase",
+  description: "TBD Supabase - Documentation Made Easy",
   icons: {
     icon: "/favicon.ico",
   },

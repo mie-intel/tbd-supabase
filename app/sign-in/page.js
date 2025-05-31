@@ -72,7 +72,7 @@ export default function Page() {
             </h2>
             <div className="mt-6 flex w-full flex-col gap-4">
               <InputWrapper ref={emailRef} icon={User} placeholder="Email" />
-              <InputWrapper ref={passwordRef} icon={Lock} placeholder="Password" />
+              <InputWrapper ref={passwordRef} type="password" icon={Lock} placeholder="Password" />
               {error && (
                 <p className="font-eudoxus-medium text-center text-sm text-[#FF0000] lg:text-xl">
                   {error}

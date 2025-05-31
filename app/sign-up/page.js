@@ -1,7 +1,7 @@
 "use client";
 
 import Container from "@/components/Container";
-import { forwardRef, use, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "@/components/AuthProvider";
 import { prettyJson } from "@/lib/prettyJson";
 import { UserRoundPen, User, Lock, BadgeCheck } from "lucide-react";
@@ -105,9 +105,10 @@ export default function Page() {
             <div className="mt-6 flex w-full flex-col gap-4">
               <InputWrapper ref={nameRef} icon={UserRoundPen} placeholder="Name" />
               <InputWrapper ref={emailRef} icon={User} placeholder="Email" />
-              <InputWrapper ref={passwordRef} icon={Lock} placeholder="Password" />
+              <InputWrapper ref={passwordRef} type="password" icon={Lock} placeholder="Password" />
               <InputWrapper
                 ref={confirmPasswordRef}
+                type="password"
                 icon={BadgeCheck}
                 placeholder="Confirm Password"
               />
