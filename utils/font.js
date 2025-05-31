@@ -29,3 +29,11 @@ export const EudoxusMedium = localFont({
   display: "swap",
   variable: "--font-eudoxus-medium",
 });
+
+export const fontVariables = [
+  EudoxusRegular.variable,
+  EudoxusBold.variable,
+  EudoxusExtraBold.variable,
+  EudoxusLight.variable,
+  EudoxusMedium.variable,
+].join(" ");

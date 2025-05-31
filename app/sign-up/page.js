@@ -26,39 +26,8 @@ export default function Page() {
   useEffect(() => {
     setLoading(false);
   }, []);
-  if (loading) return <Loading />;
-  // useEffect(() => {
-  //   const login = async () => {
-  //     const loginData = await signUp(
-  //       "Polikarpus Arya",
-  //       `polikarpus${Date.now()}@mail.com`,
-  //       "parda123",
-  //     );
-  //     setData(loginData);
-  //   };
-
-  //   login();
-  // }, []);
-
-  // useEffect(() => {
-  //   const user = async () => {
-  //     const userData = await signIn(`polikarpus@mail.com`, "parda123");
-  //     setData(userData);
-  //   };
-
-  //   user();
-  // }, []);
-
-  // useEffect(() => {
-  //   const current = async () => {
-  //     const userData = await getCurrentUser();
-  //     setData(userData);
-  //   };
-
-  //   current();
-  // }, []);
-
-  // if (!data) return <></>;
+  if (loading)
+    return <Loading className={"fixed h-screen w-screen bg-[url('/bg-comp.webp')] bg-cover"} />;
 
   const handleSubmit = async () => {
     const name = nameRef.current?.value?.trim();

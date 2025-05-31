@@ -12,7 +12,6 @@ import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const router = useRouter();
@@ -24,7 +23,8 @@ export default function Page() {
   useEffect(() => {
     setLoading(false);
   }, []);
-  if (loading) return <Loading />;
+  if (loading)
+    return <Loading className={"fixed h-screen w-screen bg-[url('/bg-comp.webp')] bg-cover"} />;
 
   const handleSubmit = async () => {
     const email = emailRef?.current?.value;
